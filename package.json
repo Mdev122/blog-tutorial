@@ -12,6 +12,7 @@
 "watch:sassprefixer": "sass/*.scss -- npm run build-dev",
 "watch:sass": "sass --watch --style=expanded --source-map sass:css",
 "watch": "npm-run-all -p watch:sass",
+"watch:browsersync": "browser-sync start --server --files \"css/.css\" \".html\" \"js/*.js\"",
 "init-project": "npm install && npm-run-all init:*",
 "init:dirs": "mkdirp sass css vendor images js",
 "init:files": "touch Readme.md index.html sass/style.scss js/script.js",
