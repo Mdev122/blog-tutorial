@@ -1,44 +1,49 @@
 {
-"scripts": {
-  "init-project": "npm install && npm-run-all init:*",
-  "init:dirs": "mkdirp sass css vendor images js",
-  "init:files": "touch Readme.md index.html sass/style.scss js/script.js",
-  "init:gitignore": "curl https://raw.githubusercontent.com/github/gitignore/master/Node.gitignore -o .gitignore",
-  "build:js": "echo 'Budowanie JS...'",
-  "build:css": "echo 'Budowanie CSS...'",
-  "build:assets": "echo 'Kopiowanie plików...'",
-  "build:sass": "sass --style=compressed --no-source-map sass:css",
-  "build:autoprefixer": "postcss css/*.css --use autoprefixer -d css",
-  "build": "npm-run-all build:sass build:autoprefixer build:js build:css build:assets",
-  "build:dev-sass": "sass --style=expanded --source-map sass:css",
-  "build:dev": "npm-run-all build:dev-sass build:autoprefixer",
-  "watch:sass": "sass --watch --style=expanded --source-map sass:css",
-  "watch:browsersync": "browser-sync start --server --files \"css/*.css\" \"*.html\" \"js/*.js\"",
-  "watch": "npm-run-all -p watch:sass watch:browsersync",
-  "test": "npm run test:html",
-  "test:html": "html-validate *.html"
-}
-"repository": {
-"type": "git",
-"url": "git+https://github.com/Mdev122/GitKodiTut.git"
-},
-"bugs": {
-"url": "https://github.com/Mdev122/GitKodiTut/issues"
-},
-"homepage": "https://github.com/Mdev122/GitKodiTut#readme",
-"keywords": [],
-"author": "",
-"license": "ISC",
-"type": "commonjs",
-"dependencies": {
-"npm-run-all": "^4.1.5",
-"sass": "^1.99.0"
-},
-"devDependencies": {
-"autoprefixer": "^10.2.4",
-"html-validate": "^11.2.0",
-"mkdirp": "^3.0.1",
-"postcss": "^8.2.6",
-"postcss-cli": "^8.3.1"
-}
+  "name": "blog-tutorial",
+  "version": "1.0.0",
+  "description": "Tutorial bloga w JavaScript",
+  "main": "js/script.js",
+  "type": "commonjs",
+  "scripts": {
+    "init-project": "npm install && npm-run-all init:*",
+    "init:dirs": "mkdirp sass css vendor images js",
+    "init:files": "touch Readme.md index.html sass/style.scss js/script.js",
+    "init:gitignore": "curl https://githubusercontent.com -o .gitignore",
+    "build:js": "echo 'Budowanie JS...'",
+    "build:css": "echo 'Budowanie CSS...'",
+    "build:assets": "echo 'Kopiowanie plików...'",
+    "build:sass": "sass --style=compressed --no-source-map sass:css",
+    "build:autoprefixer": "postcss css/*.css --use autoprefixer -d css",
+    "build": "npm-run-all build:sass build:autoprefixer build:js build:css build:assets",
+    "build:dev-sass": "sass --style=expanded --source-map sass:css",
+    "build:dev": "npm-run-all build:dev-sass build:autoprefixer",
+    "watch:sass": "sass --watch --style=expanded --source-map sass:css",
+    "watch:browsersync": "browser-sync start --server --files \"css/*.css\" \"*.html\" \"js/*.js\"",
+    "watch": "npm-run-all -p watch:sass watch:browsersync",
+    "test": "npm run test:html",
+    "test:html": "html-validate *.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com"
+  },
+  "bugs": {
+    "url": "https://github.com"
+  },
+  "homepage": "https://github.com",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "npm-run-all": "^4.1.5",
+    "sass": "^1.99.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.2.4",
+    "browser-sync": "^3.0.4",
+    "html-validate": "^11.2.0",
+    "mkdirp": "^3.0.1",
+    "postcss": "^8.2.6",
+    "postcss-cli": "^8.3.1"
+  }
 }
