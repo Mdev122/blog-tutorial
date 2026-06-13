@@ -21,8 +21,8 @@
     "watch:browsersync": "browser-sync start --server --files \"css/*.css\" \"*.html\" \"js/*.js\"",
     "watch": "npm-run-all build:* build-dev -p watch:*",
     "test": "npm-run-all test:*",
-    "test:html": "html-validate *.html"
-    "test:js": "eslint js/",
+    "test:html": "html-validate *.html",
+    "test:js": "eslint js/"
   },
   "repository": {
     "type": "git",
@@ -42,6 +42,7 @@
   "devDependencies": {
     "autoprefixer": "^10.2.4",
     "browser-sync": "^3.0.4",
+    "eslint": "^8.56.0",
     "html-validate": "^11.2.0",
     "mkdirp": "^3.0.1",
     "postcss": "^8.2.6",
