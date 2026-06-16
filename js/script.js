@@ -9,7 +9,7 @@ const optArticleSelector = '.post',
   optArticleTagSelector = '.post-tags .list',
   optArticleAuthorSelector = '.post-author',
   optArticleAuthorDataSelector = '[data-author]',
-  optTagsListSelector = '.tags.list'; // Poprawnie zdefiniowany selektor listy tagów bocznych
+  optTagsListSelector = '.tags.list';
 
 /* === ETAP 1: OBSŁUGA KLIKNIĘCIA W TYTUŁ (MENU BOCZNE) === */
 const titleClickHandler = function(event) {
@@ -17,28 +17,21 @@ const titleClickHandler = function(event) {
   const clickedElement = this;
   console.log('Kliknięto w link artykułu:', clickedElement);
 
-  /* Usuń klasę 'active' ze wszystkich linków na liście tytułów */
   const activeLinks = document.querySelectorAll('.titles a.active');
   for (let activeLink of activeLinks) {
     activeLink.classList.remove('active');
   }
 
-  /* Dodaj klasę 'active' do klikniętego linku */
   clickedElement.classList.add('active');
 
-  /* Usuń klasę 'active' ze wszystkich artykułów */
   const activePosts = document.querySelectorAll('.posts .post.active');
   for (let activePost of activePosts) {
     activePost.classList.remove('active');
   }
 
-  /* Weź zawartość atrybutu href z klikniętego linku */
   const articleSelector = clickedElement.getAttribute('href');
-
-  /* Znajdź na stronie element pasujący do pobranego selektora */
   const targetArticle = document.querySelector(articleSelector);
 
-  /* Wyświetl znaleziony artykuł */
   if (targetArticle) {
     targetArticle.classList.add('active');
     console.log('Sukces: Wyświetlono artykuł:', articleSelector);
@@ -74,8 +67,8 @@ const generateTitleLinks = function() {
 const generateTags = function() {
   console.log('--- URUCHOMIONO GENEROWANIE TAGÓW ---');
   
-  /* [NEW] create a new variable allTags with an empty array */
-  let allTags = [];
+  /* [NEW] create a new variable allTags with an empty object */
+  const allTags = {};
 
   const articles = document.querySelectorAll(optArticleSelector);
 
@@ -98,9 +91,12 @@ const generateTags = function() {
       html = html + linkHTML;
 
       /* [NEW] check if this link is NOT already in allTags */
-      if (allTags.indexOf(linkHTML) == -1) {
-        /* [NEW] add generated code to allTags array */
-        allTags.push(linkHTML);
+      if (!allTags[tag]) {
+        /* [NEW] add tag to allTags object and set count to 1 */
+        allTags[tag] = 1;
+      } else {
+        /* [NEW] increment count if tag already exists in object */
+        allTags[tag]++;
       }
     }
 
@@ -111,9 +107,18 @@ const generateTags = function() {
   /* [NEW] find list of tags in right column */
   const tagList = document.querySelector(optTagsListSelector);
 
+  /* PODGLĄD GENEROWANEGO OBIEKTU W KONSOLI */
+  console.log('Zawartość obiektu allTags:', allTags);
+
   /* [NEW] add html from allTags to tagList */
+  // Ta część zostanie zaktualizowana w kolejnym kroku, ponieważ obiekty wymagają nowej pętli do wygenerowania kodu HTML
+  let allTagsHTML = '';
+  for(let tag in allTags){
+    allTagsHTML += `<li><a href="#tag-${tag}">${tag} (${allTags[tag]})</a></li> `;
+  }
+
   if (tagList) {
-    tagList.innerHTML = allTags.join(' ');
+    tagList.innerHTML = allTagsHTML;
   } else {
     console.warn(`Brak listy tagów w chmurze bocznej dla selektora: ${optTagsListSelector}`);
   }
