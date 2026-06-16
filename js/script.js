@@ -1,6 +1,12 @@
 'use strict';
 
 console.log('=== SKRYPT URUCHOMIONY POPRAWNIE ===');
+//Stała optArticleSelector
+const optArticleSelector = '.post',
+  optTitleSelector = '.post-title',
+  optTitleListSelector = '.titles',
+  optArticleTagSelector = '.post-tags .list'; // Nowa stała wybierająca listę <ul>
+
 
 // Główna funkcja wykonująca Twój algorytm po kliknięciu w link
 const titleClickHandler = function(event) {
@@ -52,13 +58,13 @@ for (let link of links) {
 }
 const generateTags = function() {
   /* find all articles */
-  const articles = document.querySelectorAll('.posts .post');
+  const articles = document.querySelectorAll(optArticleSelector);
 
   /* START LOOP: for every article: */
   for (let article of articles) {
 
-    /* find tags wrapper */
-    const tagsWrapper = article.querySelector('.post-tags .list');
+    /* find tags wrapper za pomocą nowej stałej */
+    const tagsWrapper = article.querySelector(optArticleTagSelector);
 
     /* check if wrapper exists to avoid script errors */
     if (!tagsWrapper) continue;
@@ -91,5 +97,5 @@ const generateTags = function() {
   }
 };
 
-// Uruchomienie funkcji generowania tagów
+// Uruchomienie funkcji
 generateTags();
