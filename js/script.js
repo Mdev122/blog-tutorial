@@ -11,7 +11,8 @@ const optArticleSelector = '.post',
   optArticleAuthorDataSelector = '[data-author]',
   optTagsListSelector = '.tags.list',
   optCloudClassCount = 5,       
-  optCloudClassPrefix = 'tag-size-'; 
+  optCloudClassPrefix = 'tag-size-',
+  optAuthorsListSelector = '.authors'; // Stała ustawień dla listy autorów bocznych
 
 /* === ETAP 1: OBSŁUGA KLIKNIĘCIA W TYTUŁ (MENU BOCZNE) === */
 const titleClickHandler = function(event) {
@@ -89,19 +90,10 @@ const calculateTagsParams = function(tags) {
 
 /* === ETAP 2.6: FUNKCJA OBLICZAJĄCA KLASĘ DLA TAGU (CHMURA TAGÓW) === */
 const calculateTagClass = function(count, params) {
-  /* Odjęcie wartości minimalnej od liczby wystąpień bieżącego tagu */
   const normalizedCount = count - params.min;
-  
-  /* Odjęcie wartości minimalnej od wartości maksymalnej (zakres popularności) */
   const normalizedMax = params.max - params.min;
-  
-  /* Wyznaczenie ułamka (procentowego położenia tagu w zakresie) */
   const percentage = normalizedCount / normalizedMax;
-  
-  /* Obliczenie numeru klasy (od 1 do optCloudClassCount) przy użyciu zaokrąglenia w dół */
   const classNumber = Math.floor( percentage * (optCloudClassCount - 1) + 1 );
-  
-  /* Zwrócenie pełnej nazwy klasy (np. "tag-size-3") */
   return optCloudClassPrefix + classNumber;
 };
 
@@ -142,21 +134,15 @@ const generateTags = function() {
   }
 
   const tagList = document.querySelector(optTagsListSelector);
-
   const tagsParams = calculateTagsParams(allTags);
   console.log('tagsParams:', tagsParams);
 
   let allTagsHTML = '';
 
-  /* START LOOP: for each tag in allTags: */
   for(let tag in allTags){
-    /* Wyznaczenie dynamicznej klasy chmury dla bieżącego tagu */
     const tagLinkClass = calculateTagClass(allTags[tag], tagsParams);
-    
-    /* [MODYFIKACJA] Wygenerowanie kodu HTML bez licznika wystąpień w nawiasach */
     allTagsHTML += `<li><a class="${tagLinkClass}" href="#tag-${tag}">${tag}</a></li> `;
   }
-  /* END LOOP: for each tag in allTags: */
 
   if (tagList) {
     tagList.innerHTML = allTagsHTML;
@@ -167,9 +153,13 @@ const generateTags = function() {
   console.log('--- ZAKOŃCZONO GENEROWANIE TAGÓW ---');
 };
 
-/* === ETAP 4: DYNAMICZNE GENEROWANIE AUTORÓW === */
+/* === ETAP 4: DYNAMICZNE GENEROWANIE AUTORÓW ORAZ LISTY BOCZNEJ === */
 const generateAuthors = function() {
   console.log('--- URUCHOMIONO GENEROWANIE AUTORÓW ---');
+  
+  /* Obiekt do zliczania liczby artykułów napisanych przez poszczególnych autorów */
+  let allAuthors = {};
+
   const articles = document.querySelectorAll(optArticleSelector);
 
   for (let article of articles) {
@@ -185,8 +175,32 @@ const generateAuthors = function() {
     console.log(`-> Odczytany autor dla ${articleId}: "${authorName}"`);
     const authorUrl = authorName.replace(' ', '-').toLowerCase();
     const linkHTML = `by <a href="#author-${authorUrl}">${authorName}</a>`;
+    
     authorWrapper.innerHTML = linkHTML;
+
+    /* Logika zliczania wystąpień autora bez pętli wewnętrznej */
+    if (!allAuthors[authorName]) {
+      allAuthors[authorName] = 1;
+    } else {
+      allAuthors[authorName]++;
+    }
   }
+
+  const authorList = document.querySelector(optAuthorsListSelector);
+  let allAuthorsHTML = '';
+
+  /* Pętla generująca kody HTML linków z licznikami do bocznej kolumny */
+  for (let authorName in allAuthors) {
+    const authorUrl = authorName.replace(' ', '-').toLowerCase();
+    allAuthorsHTML += `<li><a href="#author-${authorUrl}"><span>${authorName} (${allAuthors[authorName]})</span></a></li> `;
+  }
+
+  if (authorList) {
+    authorList.innerHTML = allAuthorsHTML;
+  } else {
+    console.warn(`Brak listy autorów w menu bocznym dla selektora: ${optAuthorsListSelector}`);
+  }
+
   console.log('--- ZAKOŃCZONO GENEROWANIE AUTORÓW ---');
 };
 
@@ -226,7 +240,8 @@ const authorClickHandler = function(event) {
 
 /* === ETAP 6: PRZYPISANIE NASŁUCHIWANIA DO LINKÓW AUTORÓW === */
 const addClickListenersToAuthors = function() {
-  const authorLinks = document.querySelectorAll('.post-author a');
+  /* Selektor wyłapuje linki autorów z artykułów oraz z bocznej listy */
+  const authorLinks = document.querySelectorAll('a[href^="#author-"]');
   for (let link of authorLinks) {
     link.addEventListener('click', authorClickHandler);
   }
