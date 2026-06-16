@@ -57,45 +57,56 @@ for (let link of links) {
   link.addEventListener('click', titleClickHandler);
 }
 const generateTags = function() {
+  console.log('--- URUCHOMIONO GENEROWANIE TAGÓW ---');
+
   /* find all articles */
   const articles = document.querySelectorAll(optArticleSelector);
+  console.log('Znaleziono artykułów do otagowania:', articles.length);
 
   /* START LOOP: for every article: */
   for (let article of articles) {
+    const articleId = article.getAttribute('id');
+    console.log(`Przetwarzanie artykułu: ${articleId}`);
 
-    /* find tags wrapper za pomocą nowej stałej */
+    /* find tags wrapper */
     const tagsWrapper = article.querySelector(optArticleTagSelector);
 
     /* check if wrapper exists to avoid script errors */
-    if (!tagsWrapper) continue;
+    if (!tagsWrapper) {
+      console.warn(`Brak wrappera tagów w artykule: ${articleId}`);
+      continue;
+    }
 
     /* make html variable with empty string */
     let html = '';
 
     /* get tags from data-tags attribute */
     const articleTags = article.getAttribute('data-tags');
+    console.log(`-> Odczytane tagi (tekst): "${articleTags}"`);
 
     /* split tags into array */
     const articleTagsArray = articleTags.split(' ');
+    console.log(`-> Rozbito na tablicę:`, articleTagsArray);
 
     /* START LOOP: for each tag */
     for (let tag of articleTagsArray) {
-
       /* generate HTML of the link */
       const linkHTML = `<li><a href="#tag-${tag}">${tag}</a></li>`;
-
+      
       /* add generated code to html variable */
       html = html + linkHTML;
-
-    /* END LOOP: for each tag */
     }
+    /* END LOOP: for each tag */
 
     /* insert HTML of all the links into the tags wrapper */
     tagsWrapper.innerHTML = html;
-
-  /* END LOOP: for every article: */
+    console.log(`-> Sukces: Wstrzyknięto HTML tagów do ${articleId}`);
   }
+  /* END LOOP: for every article: */
+  
+  console.log('--- ZAKOŃCZONO GENEROWANIE TAGÓW ---');
 };
 
 // Uruchomienie funkcji
 generateTags();
+
