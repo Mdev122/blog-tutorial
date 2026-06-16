@@ -9,7 +9,9 @@ const optArticleSelector = '.post',
   optArticleTagSelector = '.post-tags .list',
   optArticleAuthorSelector = '.post-author',
   optArticleAuthorDataSelector = '[data-author]',
-  optTagsListSelector = '.tags.list';
+  optTagsListSelector = '.tags.list',
+  optCloudClassCount = 5,       
+  optCloudClassPrefix = 'tag-size-'; 
 
 /* === ETAP 1: OBSŁUGA KLIKNIĘCIA W TYTUŁ (MENU BOCZNE) === */
 const titleClickHandler = function(event) {
@@ -63,11 +65,50 @@ const generateTitleLinks = function() {
   }
 };
 
+/* === ETAP 2.5: FUNKCJA OBLICZAJĄCA MIN I MAX WYSTĄPIEŃ TAGÓW === */
+const calculateTagsParams = function(tags) {
+  const params = {
+    max: 0,
+    min: 999999
+  };
+
+  for (let tag in tags) {
+    console.log(tag + ' is used ' + tags[tag] + ' times');
+
+    if (tags[tag] > params.max) {
+      params.max = tags[tag];
+    }
+
+    if (tags[tag] < params.min) {
+      params.min = tags[tag];
+    }
+  }
+
+  return params;
+};
+
+/* === ETAP 2.6: FUNKCJA OBLICZAJĄCA KLASĘ DLA TAGU (CHMURA TAGÓW) === */
+const calculateTagClass = function(count, params) {
+  /* Odjęcie wartości minimalnej od liczby wystąpień bieżącego tagu */
+  const normalizedCount = count - params.min;
+  
+  /* Odjęcie wartości minimalnej od wartości maksymalnej (zakres popularności) */
+  const normalizedMax = params.max - params.min;
+  
+  /* Wyznaczenie ułamka (procentowego położenia tagu w zakresie) */
+  const percentage = normalizedCount / normalizedMax;
+  
+  /* Obliczenie numeru klasy (od 1 do optCloudClassCount) przy użyciu zaokrąglenia w dół */
+  const classNumber = Math.floor( percentage * (optCloudClassCount - 1) + 1 );
+  
+  /* Zwrócenie pełnej nazwy klasy (np. "tag-size-3") */
+  return optCloudClassPrefix + classNumber;
+};
+
 /* === ETAP 3: DYNAMICZNE GENEROWANIE TAGÓW === */
 const generateTags = function() {
   console.log('--- URUCHOMIONO GENEROWANIE TAGÓW ---');
   
-  /* [NEW] create a new variable allTags with an empty object */
   let allTags = {};
 
   const articles = document.querySelectorAll(optArticleSelector);
@@ -90,33 +131,33 @@ const generateTags = function() {
       const linkHTML = `<li><a href="#tag-${tag}">${tag}</a></li>`;
       html = html + linkHTML;
 
-      /* [NEW] check if this link is NOT already in allTags */
       if(!allTags[tag]) {
-        /* [NEW] add tag to allTags object */
         allTags[tag] = 1;
       } else {
         allTags[tag]++;
       }
     }
 
-    /* Wstawienie tagów do konkretnego artykułu */
     tagsWrapper.innerHTML = html;
   }
 
-  /* [NEW] find list of tags in right column */
   const tagList = document.querySelector(optTagsListSelector);
 
-  /* [NEW] create variable for all links HTML code */
+  const tagsParams = calculateTagsParams(allTags);
+  console.log('tagsParams:', tagsParams);
+
   let allTagsHTML = '';
 
-  /* [NEW] START LOOP: for each tag in allTags: */
+  /* START LOOP: for each tag in allTags: */
   for(let tag in allTags){
-    /* [NEW] generate code of a link and add it to allTagsHTML */
-    allTagsHTML += tag + ' (' + allTags[tag] + ') ';
+    /* Wyznaczenie dynamicznej klasy chmury dla bieżącego tagu */
+    const tagLinkClass = calculateTagClass(allTags[tag], tagsParams);
+    
+    /* Generowanie kodu HTML linka z przypisaną klasą chmury */
+    allTagsHTML += `<li><a class="${tagLinkClass}" href="#tag-${tag}">${tag} (${allTags[tag]})</a></li> `;
   }
-  /* [NEW] END LOOP: for each tag in allTags: */
+  /* END LOOP: for each tag in allTags: */
 
-  /*[NEW] add HTML from allTagsHTML to tagList */
   if (tagList) {
     tagList.innerHTML = allTagsHTML;
   } else {
