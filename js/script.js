@@ -153,8 +153,8 @@ const generateTags = function() {
     /* Wyznaczenie dynamicznej klasy chmury dla bieżącego tagu */
     const tagLinkClass = calculateTagClass(allTags[tag], tagsParams);
     
-    /* Generowanie kodu HTML linka z przypisaną klasą chmury */
-    allTagsHTML += `<li><a class="${tagLinkClass}" href="#tag-${tag}">${tag} (${allTags[tag]})</a></li> `;
+    /* [MODYFIKACJA] Wygenerowanie kodu HTML bez licznika wystąpień w nawiasach */
+    allTagsHTML += `<li><a class="${tagLinkClass}" href="#tag-${tag}">${tag}</a></li> `;
   }
   /* END LOOP: for each tag in allTags: */
 
