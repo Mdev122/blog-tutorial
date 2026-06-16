@@ -68,7 +68,7 @@ const generateTags = function() {
   console.log('--- URUCHOMIONO GENEROWANIE TAGÓW ---');
   
   /* [NEW] create a new variable allTags with an empty object */
-  const allTags = {};
+  let allTags = {};
 
   const articles = document.querySelectorAll(optArticleSelector);
 
@@ -91,12 +91,9 @@ const generateTags = function() {
       html = html + linkHTML;
 
       /* [NEW] check if this link is NOT already in allTags */
-      if (!allTags[tag]) {
-        /* [NEW] add tag to allTags object and set count to 1 */
+      if(!allTags[tag]) {
+        /* [NEW] add tag to allTags object */
         allTags[tag] = 1;
-      } else {
-        /* [NEW] increment count if tag already exists in object */
-        allTags[tag]++;
       }
     }
 
@@ -107,11 +104,8 @@ const generateTags = function() {
   /* [NEW] find list of tags in right column */
   const tagList = document.querySelector(optTagsListSelector);
 
-  /* PODGLĄD GENEROWANEGO OBIEKTU W KONSOLI */
-  console.log('Zawartość obiektu allTags:', allTags);
-
   /* [NEW] add html from allTags to tagList */
-  // Ta część zostanie zaktualizowana w kolejnym kroku, ponieważ obiekty wymagają nowej pętli do wygenerowania kodu HTML
+  // Tymczasowa pętla do podglądu działania obiektu w widoku HTML
   let allTagsHTML = '';
   for(let tag in allTags){
     allTagsHTML += `<li><a href="#tag-${tag}">${tag} (${allTags[tag]})</a></li> `;
