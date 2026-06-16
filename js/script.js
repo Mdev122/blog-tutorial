@@ -1,46 +1,43 @@
 'use strict';
 
 console.log('=== SKRYPT URUCHOMIONY POPRAWNIE ===');
-//Stała optArticleSelector
+
+// JEDEN WSPÓLNY BLOK KONFIGURACYJNY
 const optArticleSelector = '.post',
   optTitleSelector = '.post-title',
   optTitleListSelector = '.titles',
-  optArticleTagSelector = '.post-tags .list'; // Nowa stała wybierająca listę <ul>
+  optArticleTagSelector = '.post-tags .list',
+  optArticleAuthorSelector = '.post-author',
+  optArticleAuthorDataSelector = '[data-author]';
 
-
-// Główna funkcja wykonująca Twój algorytm po kliknięciu w link
+/* === ETAP 1: OBSŁUGA KLIKNIĘCIA W TYTUŁ (MENU BOCZNE) === */
 const titleClickHandler = function(event) {
-  // Blokujemy domyślne zachowanie linku (skakanie strony do kotwicy)
   event.preventDefault();
-  
-  // Zdefiniowanie zmiennej 'clickedElement' WEWNĄTRZ funkcji (wskazuje na kliknięty link)
   const clickedElement = this;
-  console.log('Kliknięto w link:', clickedElement);
+  console.log('Kliknięto w link artykułu:', clickedElement);
 
-  /* ETAP 1: Ustaw klasy linków */
-  // Usuń klasę 'active' ze wszystkich linków na liście tytułów
+  /* Usuń klasę 'active' ze wszystkich linków na liście tytułów */
   const activeLinks = document.querySelectorAll('.titles a.active');
   for (let activeLink of activeLinks) {
     activeLink.classList.remove('active');
   }
-  // Dodaj klasę 'active' do klikniętego linku
+
+  /* Dodaj klasę 'active' do klikniętego linku */
   clickedElement.classList.add('active');
 
-  /* ETAP 2: Ukryj wszystkie artykuły */
-  // Usuń klasę 'active' ze wszystkich artykułów
+  /* Usuń klasę 'active' ze wszystkich artykułów */
   const activePosts = document.querySelectorAll('.posts .post.active');
   for (let activePost of activePosts) {
     activePost.classList.remove('active');
   }
 
-  /* ETAP 3: Znalezienie i wyświetlenie artykułu */
-  // Weź zawartość atrybutu href z klikniętego linku (np. "#article-2")
+  /* Weź zawartość atrybutu href z klikniętego linku */
   const articleSelector = clickedElement.getAttribute('href');
   
-  // Znajdź na stronie element pasujący do pobranego selektora (np. id="article-2")
+  /* Znajdź na stronie element pasujący do pobranego selektora */
   const targetArticle = document.querySelector(articleSelector);
   
-  // Wyświetl znaleziony artykuł (dodaj klasę 'active')
+  /* Wyświetl znaleziony artykuł */
   if (targetArticle) {
     targetArticle.classList.add('active');
     console.log('Sukces: Wyświetlono artykuł:', articleSelector);
@@ -49,64 +46,130 @@ const titleClickHandler = function(event) {
   }
 };
 
-// INICJALIZACJA: Znalezienie wszystkich linków i przypisanie im nasłuchiwania kliknięcia
-const links = document.querySelectorAll('.titles a');
-console.log('Liczba znalezionych linków w menu bocznym:', links.length);
+/* === ETAP 2: DYNAMICZNE GENEROWANIE LISTY TYTUŁÓW === */
+const generateTitleLinks = function() {
+  const titleList = document.querySelector(optTitleListSelector);
+  titleList.innerHTML = '';
 
-for (let link of links) {
-  link.addEventListener('click', titleClickHandler);
-}
-const generateTags = function() {
-  console.log('--- URUCHOMIONO GENEROWANIE TAGÓW ---');
-
-  /* find all articles */
   const articles = document.querySelectorAll(optArticleSelector);
-  console.log('Znaleziono artykułów do otagowania:', articles.length);
+  let html = '';
 
-  /* START LOOP: for every article: */
   for (let article of articles) {
     const articleId = article.getAttribute('id');
-    console.log(`Przetwarzanie artykułu: ${articleId}`);
+    const articleTitle = article.querySelector(optTitleSelector).innerHTML;
+    const linkHTML = `<li><a href="#${articleId}"><span>${articleTitle}</span></a></li>`;
+    html = html + linkHTML;
+  }
 
-    /* find tags wrapper */
+  titleList.innerHTML = html;
+
+  const links = document.querySelectorAll('.titles a');
+  for (let link of links) {
+    link.addEventListener('click', titleClickHandler);
+  }
+};
+
+/* === ETAP 3: DYNAMICZNE GENEROWANIE TAGÓW === */
+const generateTags = function() {
+  console.log('--- URUCHOMIONO GENEROWANIE TAGÓW ---');
+  const articles = document.querySelectorAll(optArticleSelector);
+
+  for (let article of articles) {
+    const articleId = article.getAttribute('id');
     const tagsWrapper = article.querySelector(optArticleTagSelector);
 
-    /* check if wrapper exists to avoid script errors */
     if (!tagsWrapper) {
       console.warn(`Brak wrappera tagów w artykule: ${articleId}`);
       continue;
     }
 
-    /* make html variable with empty string */
     let html = '';
-
-    /* get tags from data-tags attribute */
     const articleTags = article.getAttribute('data-tags');
-    console.log(`-> Odczytane tagi (tekst): "${articleTags}"`);
+    console.log(`-> Odczytane tagi dla ${articleId}: "${articleTags}"`);
 
-    /* split tags into array */
     const articleTagsArray = articleTags.split(' ');
-    console.log(`-> Rozbito na tablicę:`, articleTagsArray);
 
-    /* START LOOP: for each tag */
     for (let tag of articleTagsArray) {
-      /* generate HTML of the link */
       const linkHTML = `<li><a href="#tag-${tag}">${tag}</a></li>`;
-      
-      /* add generated code to html variable */
       html = html + linkHTML;
     }
-    /* END LOOP: for each tag */
 
-    /* insert HTML of all the links into the tags wrapper */
     tagsWrapper.innerHTML = html;
-    console.log(`-> Sukces: Wstrzyknięto HTML tagów do ${articleId}`);
   }
-  /* END LOOP: for every article: */
-  
   console.log('--- ZAKOŃCZONO GENEROWANIE TAGÓW ---');
 };
 
-// Uruchomienie funkcji
-generateTags();
+/* === ETAP 4: DYNAMICZNE GENEROWANIE AUTORÓW === */
+const generateAuthors = function() {
+  console.log('--- URUCHOMIONO GENEROWANIE AUTORÓW ---');
+  const articles = document.querySelectorAll(optArticleSelector);
 
+  for (let article of articles) {
+    const articleId = article.getAttribute('id');
+    const authorWrapper = article.querySelector(optArticleAuthorSelector);
+
+    if (!authorWrapper) {
+      console.warn(`Brak wrappera autora w artykule: ${articleId}`);
+      continue;
+    }
+
+    const authorName = article.getAttribute('data-author');
+    console.log(`-> Odczytany autor dla ${articleId}: "${authorName}"`);
+
+    const authorUrl = authorName.replace(' ', '-').toLowerCase();
+    const linkHTML = `by <a href="#author-${authorUrl}">${authorName}</a>`;
+
+    authorWrapper.innerHTML = linkHTML;
+  }
+  console.log('--- ZAKOŃCZONO GENEROWANIE AUTORÓW ---');
+};
+
+/* === ETAP 5: OBSŁUGA KLIKNIĘCIA W AUTORA (FILTROWANIE) === */
+const authorClickHandler = function(event) {
+  event.preventDefault();
+  const clickedElement = this;
+  console.log('Kliknięto w link autora:', clickedElement);
+
+  const href = clickedElement.getAttribute('href');
+  const authorUrl = href.replace('#author-', '');
+
+  const activeAuthorLinks = document.querySelectorAll('a[href^="#author-"].active');
+  for (let activeLink of activeAuthorLinks) {
+    activeLink.classList.remove('active');
+  }
+
+  const matchingAuthorLinks = document.querySelectorAll(`a[href="${href}"]`);
+  for (let matchingLink of matchingAuthorLinks) {
+    matchingLink.classList.add('active');
+  }
+
+  const allArticles = document.querySelectorAll(optArticleSelector);
+  for (let article of allArticles) {
+    article.classList.remove('active');
+  }
+
+  for (let article of allArticles) {
+    const articleAuthor = article.getAttribute('data-author');
+    const formattedArticleAuthor = articleAuthor.replace(' ', '-').toLowerCase();
+
+    if (formattedArticleAuthor === authorUrl) {
+      article.classList.add('active');
+    }
+  }
+};
+
+/* === ETAP 6: PRZYPISANIE NASŁUCHIWANIA DO LINKÓW AUTORÓW === */
+const addClickListenersToAuthors = function() {
+  const authorLinks = document.querySelectorAll('.post-author a');
+
+  for (let link of authorLinks) {
+    link.addEventListener('click', authorClickHandler);
+  }
+  console.log(`Przypisano nasłuchiwanie kliknięć do ${authorLinks.length} linków autorów.`);
+};
+
+// INICJALIZACJA WYWOŁAŃ PRZY STARCIE STRONY
+generateTitleLinks();
+generateTags();
+generateAuthors();
+addClickListenersToAuthors();
