@@ -94,6 +94,8 @@ const generateTags = function() {
       if(!allTags[tag]) {
         /* [NEW] add tag to allTags object */
         allTags[tag] = 1;
+      } else {
+        allTags[tag]++;
       }
     }
 
@@ -104,18 +106,9 @@ const generateTags = function() {
   /* [NEW] find list of tags in right column */
   const tagList = document.querySelector(optTagsListSelector);
 
-  /* [NEW] add html from allTags to tagList */
-  // Tymczasowa pętla do podglądu działania obiektu w widoku HTML
-  let allTagsHTML = '';
-  for(let tag in allTags){
-    allTagsHTML += `<li><a href="#tag-${tag}">${tag} (${allTags[tag]})</a></li> `;
-  }
-
-  if (tagList) {
-    tagList.innerHTML = allTagsHTML;
-  } else {
-    console.warn(`Brak listy tagów w chmurze bocznej dla selektora: ${optTagsListSelector}`);
-  }
+  /* [NEW] add HTML from allTags to tagList */
+  // tagList.innerHTML = allTags.join(' ');
+  console.log(allTags);
 
   console.log('--- ZAKOŃCZONO GENEROWANIE TAGÓW ---');
 };
