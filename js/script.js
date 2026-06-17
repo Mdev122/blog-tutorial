@@ -1,4 +1,5 @@
 'use strict';
+
 console.log('=== SKRYPT URUCHOMIONY POPRAWNIE ===');
 
 // JEDEN WSPÓLNY BLOK KONFIGURACYJNY
@@ -9,7 +10,7 @@ const optArticleSelector = '.post',
   optArticleAuthorSelector = '.post-author',
   optArticleAuthorDataSelector = '[data-author]',
   optTagsListSelector = '.tags.list',
-  optCloudClassCount = 5,
+  optCloudClassCount = 5,       
   optCloudClassPrefix = 'tag-size-',
   optAuthorsListSelector = '.authors'; // Stała ustawień dla listy autorów bocznych
 
@@ -81,7 +82,7 @@ const calculateTagsParams = function(tags) {
       params.min = tags[tag];
     }
   }
-  return params; // POPRAWIONE: Instrukcja return musi zwracać obiekt i znajdować się przed klamrą zamykającą
+  return params;
 };
 
 /* === ETAP 2.6: FUNKCJA OBLICZAJĄCA KLASĘ DLA TAGU (CHMURA TAGÓW) === */
@@ -89,7 +90,7 @@ const calculateTagClass = function(count, params) {
   const normalizedCount = count - params.min;
   const normalizedMax = params.max - params.min;
   const percentage = normalizedCount / normalizedMax;
-  const classNumber = Math.floor(percentage * (optCloudClassCount - 1) + 1);
+  const classNumber = Math.floor( percentage * (optCloudClassCount - 1) + 1 );
   return optCloudClassPrefix + classNumber;
 };
 
@@ -116,7 +117,7 @@ const generateTags = function() {
     for (let tag of articleTagsArray) {
       const linkHTML = `<li><a href="#tag-${tag}">${tag}</a></li>`;
       html = html + linkHTML;
-      if (!allTags[tag]) {
+      if(!allTags[tag]) {
         allTags[tag] = 1;
       } else {
         allTags[tag]++;
@@ -130,7 +131,8 @@ const generateTags = function() {
   console.log('tagsParams:', tagsParams);
 
   let allTagsHTML = '';
-  for (let tag in allTags) {
+
+  for(let tag in allTags){
     const tagLinkClass = calculateTagClass(allTags[tag], tagsParams);
     allTagsHTML += `<li><a class="${tagLinkClass}" href="#tag-${tag}">${tag}</a></li> `;
   }
@@ -147,6 +149,7 @@ const generateTags = function() {
 const generateAuthors = function() {
   console.log('--- URUCHOMIONO GENEROWANIE AUTORÓW ---');
   let allAuthors = {};
+
   const articles = document.querySelectorAll(optArticleSelector);
 
   for (let article of articles) {
@@ -162,6 +165,7 @@ const generateAuthors = function() {
     console.log(`-> Odczytany autor dla ${articleId}: "${authorName}"`);
     const authorUrl = authorName.replace(' ', '-').toLowerCase();
     const linkHTML = `by <a href="#author-${authorUrl}">${authorName}</a>`;
+    
     authorWrapper.innerHTML = linkHTML;
 
     if (!allAuthors[authorName]) {
@@ -176,7 +180,6 @@ const generateAuthors = function() {
 
   for (let authorName in allAuthors) {
     const authorUrl = authorName.replace(' ', '-').toLowerCase();
-    // POPRAWIONE: Scalono rozbity zapis interpolacji `${allAuthors[authorName]}` w jedną linię
     allAuthorsHTML += `<li><a href="#author-${authorUrl}"><span>${authorName} (${allAuthors[authorName]})</span></a></li> `;
   }
 
@@ -185,6 +188,7 @@ const generateAuthors = function() {
   } else {
     console.warn(`Brak listy autorów w menu bocznym dla selektora: ${optAuthorsListSelector}`);
   }
+
   console.log('--- ZAKOŃCZONO GENEROWANIE AUTORÓW ---');
 };
 
