@@ -1,6 +1,7 @@
+/* global Handlebars */
 'use strict';
 
-console.log('=== SKRYPT URUCHOMIONY POPRAWNIE ===');
+console.log('=== SKRYPT URUCHOMIONY POPRAWNIE Z HANDLEBARS ===');
 
 // JEDEN WSPÓLNY BLOK KONFIGURACYJNY
 const optArticleSelector = '.post',
@@ -8,11 +9,19 @@ const optArticleSelector = '.post',
   optTitleListSelector = '.titles',
   optArticleTagSelector = '.post-tags .list',
   optArticleAuthorSelector = '.post-author',
-  optArticleAuthorDataSelector = '[data-author]',
   optTagsListSelector = '.tags.list',
   optCloudClassCount = 5,       
   optCloudClassPrefix = 'tag-size-',
-  optAuthorsListSelector = '.authors'; // Stała ustawień dla listy autorów bocznych
+  optAuthorsListSelector = '.authors';
+
+// GLOBALNY OBIEKT PRZECHOWUJĄCY SKOMPILOWANE SZABLONY
+const templates = {
+  articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
+  articleTag: Handlebars.compile(document.querySelector('#template-article-tag').innerHTML),
+  articleAuthor: Handlebars.compile(document.querySelector('#template-article-author').innerHTML),
+  tagCloudLink: Handlebars.compile(document.querySelector('#template-tag-cloud-link').innerHTML),
+  authorListLink: Handlebars.compile(document.querySelector('#template-author-list-link').innerHTML)
+};
 
 /* === ETAP 1: OBSŁUGA KLIKNIĘCIA W TYTUŁ (MENU BOCZNE) === */
 const titleClickHandler = function(event) {
@@ -44,17 +53,21 @@ const titleClickHandler = function(event) {
 };
 
 /* === ETAP 2: DYNAMICZNE GENEROWANIE LISTY TYTUŁÓW === */
-const generateTitleLinks = function() {
+const generateTitleLinks = function(customSelector = '') {
   const titleList = document.querySelector(optTitleListSelector);
   titleList.innerHTML = '';
 
-  const articles = document.querySelectorAll(optArticleSelector);
+  const articles = document.querySelectorAll(optArticleSelector + customSelector);
   let html = '';
 
   for (let article of articles) {
     const articleId = article.getAttribute('id');
     const articleTitle = article.querySelector(optTitleSelector).innerHTML;
-    const linkHTML = `<li><a href="#${articleId}"><span>${articleTitle}</span></a></li>`;
+    
+    // WYKONANO: Pkt. 1 - Wykorzystanie szablonu pojedynczego linku artykułu
+    const linkHTMLData = { id: articleId, title: articleTitle };
+    const linkHTML = templates.articleLink(linkHTMLData);
+    
     html = html + linkHTML;
   }
 
@@ -64,33 +77,32 @@ const generateTitleLinks = function() {
   for (let link of links) {
     link.addEventListener('click', titleClickHandler);
   }
+
+  if (links.length > 0) {
+    links[0].click();
+  }
 };
 
-/* === ETAP 2.5: FUNKCJA OBLICZAJĄCA MIN I MAX WYSTĄPIEŃ TAGÓW === */
+/* === ETAP 2.5: FUNKCJE POMOCNICZE DLA CHMURY TAGÓW === */
 const calculateTagsParams = function(tags) {
-  const params = {
-    max: 0,
-    min: 999999
-  };
-
+  const params = { max: 0, min: 999999 };
   for (let tag in tags) {
-    console.log(tag + ' is used ' + tags[tag] + ' times');
-    if (tags[tag] > params.max) {
-      params.max = tags[tag];
-    }
-    if (tags[tag] < params.min) {
-      params.min = tags[tag];
-    }
+    if (tags[tag] > params.max) params.max = tags[tag];
+    if (tags[tag] < params.min) params.min = tags[tag];
   }
   return params;
 };
 
-/* === ETAP 2.6: FUNKCJA OBLICZAJĄCA KLASĘ DLA TAGU (CHMURA TAGÓW) === */
 const calculateTagClass = function(count, params) {
   const normalizedCount = count - params.min;
   const normalizedMax = params.max - params.min;
+  
+  if (normalizedMax === 0) {
+    return optCloudClassPrefix + 1;
+  }
+
   const percentage = normalizedCount / normalizedMax;
-  const classNumber = Math.floor( percentage * (optCloudClassCount - 1) + 1 );
+  const classNumber = Math.floor(percentage * (optCloudClassCount - 1) + 1);
   return optCloudClassPrefix + classNumber;
 };
 
@@ -111,11 +123,13 @@ const generateTags = function() {
 
     let html = '';
     const articleTags = article.getAttribute('data-tags');
-    console.log(`-> Odczytane tagi dla ${articleId}: "${articleTags}"`);
     const articleTagsArray = articleTags.split(' ');
 
     for (let tag of articleTagsArray) {
-      const linkHTML = `<li><a href="#tag-${tag}">${tag}</a></li>`;
+      // WYKONANO: Pkt. 2 - Wykorzystanie szablonu pojedynczego linku tagu w poście
+      const linkHTMLData = { tag: tag };
+      const linkHTML = templates.articleTag(linkHTMLData);
+      
       html = html + linkHTML;
       if(!allTags[tag]) {
         allTags[tag] = 1;
@@ -128,17 +142,24 @@ const generateTags = function() {
 
   const tagList = document.querySelector(optTagsListSelector);
   const tagsParams = calculateTagsParams(allTags);
-  console.log('tagsParams:', tagsParams);
 
-  let allTagsHTML = '';
+  // WYKONANO: Pkt. 4 - Stworzenie pustego obiektu struktury danych chmury zamiast allTagsHTML
+  const allTagsData = { tags: [] };
 
-  for(let tag in allTags){
-    const tagLinkClass = calculateTagClass(allTags[tag], tagsParams);
-    allTagsHTML += `<li><a class="${tagLinkClass}" href="#tag-${tag}">${tag}</a></li> `;
+  for(let tag in allTags) {
+    // WYKONANO: Pkt. 4 - Wpychanie kolejnych obiektów do tablicy z parametrami dla chmury
+    allTagsData.tags.push({
+      tag: tag,
+      count: allTags[tag],
+      className: calculateTagClass(allTags[tag], tagsParams)
+    });
   }
 
+  console.log('Zawartość obiektu allTagsData dla punktu 4:', allTagsData);
+
   if (tagList) {
-    tagList.innerHTML = allTagsHTML;
+    // WYKONANO: Pkt. 4 - Przekazanie zbiorczego obiektu do szablonu zawierającego pętlę {{#each}}
+    tagList.innerHTML = templates.tagCloudLink(allTagsData);
   } else {
     console.warn(`Brak listy tagów w chmurze bocznej dla selektora: ${optTagsListSelector}`);
   }
@@ -149,7 +170,6 @@ const generateTags = function() {
 const generateAuthors = function() {
   console.log('--- URUCHOMIONO GENEROWANIE AUTORÓW ---');
   let allAuthors = {};
-
   const articles = document.querySelectorAll(optArticleSelector);
 
   for (let article of articles) {
@@ -162,9 +182,11 @@ const generateAuthors = function() {
     }
 
     const authorName = article.getAttribute('data-author');
-    console.log(`-> Odczytany autor dla ${articleId}: "${authorName}"`);
     const authorUrl = authorName.replace(' ', '-').toLowerCase();
-    const linkHTML = `by <a href="#author-${authorUrl}">${authorName}</a>`;
+    
+    // WYKONANO: Pkt. 3 - Wykorzystanie szablonu pojedynczego linku autora pod wpisem
+    const linkHTMLData = { authorName: authorName, authorUrl: authorUrl };
+    const linkHTML = templates.articleAuthor(linkHTMLData);
     
     authorWrapper.innerHTML = linkHTML;
 
@@ -176,15 +198,23 @@ const generateAuthors = function() {
   }
 
   const authorList = document.querySelector(optAuthorsListSelector);
-  let allAuthorsHTML = '';
+  
+  // WYKONANO: Pkt. 5 - Analogiczne stworzenie obiektu struktury danych listy autorów bocznych
+  const allAuthorsData = { authors: [] };
 
   for (let authorName in allAuthors) {
-    const authorUrl = authorName.replace(' ', '-').toLowerCase();
-    allAuthorsHTML += `<li><a href="#author-${authorUrl}"><span>${authorName} (${allAuthors[authorName]})</span></a></li> `;
+    allAuthorsData.authors.push({
+      authorName: authorName,
+      authorUrl: authorName.replace(' ', '-').toLowerCase(),
+      count: allAuthors[authorName]
+    });
   }
 
+  console.log('Zawartość obiektu allAuthorsData dla punktu 5:', allAuthorsData);
+
   if (authorList) {
-    authorList.innerHTML = allAuthorsHTML;
+    // WYKONANO: Pkt. 5 - Przekazanie zbiorczego obiektu do szablonu zawierającego pętlę {{#each}}
+    authorList.innerHTML = templates.authorListLink(allAuthorsData);
   } else {
     console.warn(`Brak listy autorów w menu bocznym dla selektora: ${optAuthorsListSelector}`);
   }
@@ -196,10 +226,9 @@ const generateAuthors = function() {
 const authorClickHandler = function(event) {
   event.preventDefault();
   const clickedElement = this;
-  console.log('Kliknięto w link autora:', clickedElement);
 
   const href = clickedElement.getAttribute('href');
-  const authorUrl = href.replace('#author-', '');
+  const authorName = clickedElement.getAttribute('data-author');
 
   const activeAuthorLinks = document.querySelectorAll('a[href^="#author-"].active');
   for (let activeLink of activeAuthorLinks) {
@@ -211,31 +240,61 @@ const authorClickHandler = function(event) {
     matchingLink.classList.add('active');
   }
 
-  const allArticles = document.querySelectorAll(optArticleSelector);
-  for (let article of allArticles) {
-    article.classList.remove('active');
-  }
-
-  for (let article of allArticles) {
-    const articleAuthor = article.getAttribute('data-author');
-    const formattedArticleAuthor = articleAuthor.replace(' ', '-').toLowerCase();
-    if (formattedArticleAuthor === authorUrl) {
-      article.classList.add('active');
-    }
-  }
+  generateTitleLinks(`[data-author="${authorName}"]`);
 };
 
-/* === ETAP 6: PRZYPISANIE NASŁUCHIWANIA DO LINKÓW AUTORÓW === */
+/* === ETAP 5.5: OBSŁUGA KLIKNIĘCIA W TAG (FILTROWANIE) === */
+const tagClickHandler = function(event) {
+  event.preventDefault();
+  const clickedElement = this;
+
+  const href = clickedElement.getAttribute('href');
+  const tag = href.replace('#tag-', '');
+
+  const activeTagLinks = document.querySelectorAll('a[href^="#tag-"].active');
+  for (let activeLink of activeTagLinks) {
+    activeLink.classList.remove('active');
+  }
+
+  const matchingTagLinks = document.querySelectorAll(`a[href="${href}"]`);
+  for (let matchingLink of matchingTagLinks) {
+    matchingLink.classList.add('active');
+  }
+
+  generateTitleLinks(`[data-tags~="${tag}"]`);
+};
+
+/* === ETAP 6: PRZYPISANIE NASŁUCHIWANIA === */
 const addClickListenersToAuthors = function() {
   const authorLinks = document.querySelectorAll('a[href^="#author-"]');
   for (let link of authorLinks) {
     link.addEventListener('click', authorClickHandler);
   }
-  console.log(`Przypisano nasłuchiwanie kliknięć do ${authorLinks.length} linków autorów.`);
 };
 
+const addClickListenersToTags = function() {
+  const tagLinks = document.querySelectorAll('a[href^="#tag-"]');
+  for (let link of tagLinks) {
+    link.addEventListener('click', tagClickHandler);
+  }
+};
+
+/* === RESETOWANIE FILTRÓW PO KLIKNIĘCIU W LOGO === */
+const logo = document.querySelector('.logo');
+if (logo) {
+  logo.style.cursor = 'pointer';
+  logo.addEventListener('click', function() {
+    const activeLinks = document.querySelectorAll('a.active');
+    for (let link of activeLinks) {
+      link.classList.remove('active');
+    }
+    generateTitleLinks();
+  });
+}
+
 // INICJALIZACJA WYWOŁAŃ PRZY STARCIE STRONY
-generateTitleLinks();
 generateTags();
 generateAuthors();
+generateTitleLinks();
 addClickListenersToAuthors();
+addClickListenersToTags();
