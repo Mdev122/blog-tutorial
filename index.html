@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>js-blog-tutorial</title>
-  <link rel="stylesheet" href="https://googleapis.com|Sacramento|Source+Sans+Pro:300&subset=latin-ext">
+  <!-- POPRAWIONO: Poprawny adres URL do Google Fonts z odpowiednimi separatorami -->
+  <link rel="stylesheet" href="https://googleapis.com">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -12,105 +13,112 @@
     <div class="container">
       <h1 class="logo">my blog</h1>
       <main class="wrapper">
-        
         <!-- MENU BOCZNE -->
         <aside class="sidebar">
           <h2 class="section-title">All posts</h2>
           <!-- Dynamiczna lista tytułów artykułów -->
           <ul class="list titles"></ul>
-          
           <h2 class="section-title">Tags</h2>
           <!-- Dynamiczna chmura tagów bez liczników -->
           <ul class="tags list"></ul>
-
           <h2 class="section-title">Authors</h2>
           <!-- Wyczyszczona z przykładowych linków lista autorów w prawej kolumnie -->
           <ul class="list authors"></ul>
         </aside>
-
         <!-- SEKCJA Z ARTYKUŁAMI -->
         <section class="posts">
-          
           <!-- Artykuł 1 -->
           <article class="post active" id="article-1" data-tags="cat cactus scissors" data-author="Marion Berry">
             <h3 class="post-title">Article 1</h3>
             <p class="post-author"></p>
             <div class="post-content">
-              <p>Duis non dolor efficitur erat interdum fringilla a lobortis dolor. Aenean in massa viverra, pretium augue et, imperdiet diam. Proin varius vitae lectus ut suscipit. Etiam metus lacus, molestie at ante eget, gravida tristique metus. Morbi finibus elit mi, ut aliquam libero tempor eu.</p>
-              <p>Curabitur a arcu ut nunc ornare tempor. Vestibulum et augue purus. Sed mattis auctor iaculis. Duis placerat tempus nisl, et commodo sem varius sed. Ut ac ultrices leo. Aliquam efficitur augue a scelerisque lacinia. Donec sit amet justo lacus.</p>
-              <p>Duis tincidunt tellus non lorem molestie lobortis. Ut nec mauris consectetur, convallis nisl vel, venenatis magna. Sed efficitur egestas purus, eu fermentum leo sodales in.</p>
+              <p>Duis non dolor efficitur erat interdum fringilla a lobortis dolor. Aenean in massa viverra,
+              pretium augue et, imperdiet diam. Proin varius vitae lectus ut suscipit. Etiam metus lacus,
+              molestie at ante eget, gravida tristique metus. Morbi finibus elit mi, ut aliquam libero tempor
+              eu.</p>
+              <p>Curabitur a arcu ut nunc ornare tempor. Vestibulum et augue purus. Sed mattis auctor iaculis.
+              Duis placerat tempus nisl, et commodo sem varius sed. Ut ac ultrices leo. Aliquam efficitur augue
+              a scelerisque lacinia. Donec sit amet justo lacus.</p>
+              <p>Duis tincidunt tellus non lorem molestie lobortis. Ut nec mauris consectetur, convallis nisl vel,
+              venenatis magna. Sed efficitur egestas purus, eu fermentum leo sodales in.</p>
             </div>
             <div class="post-tags">
               <p><strong>Tags:</strong></p>
               <ul class="list list-horizontal"></ul>
             </div>
           </article>
-
           <!-- Artykuł 2 -->
           <article class="post" id="article-2" data-tags="cat pool" data-author="Marion Berry">
             <h3 class="post-title">Article 2</h3>
             <p class="post-author"></p>
             <div class="post-content">
-              <p>Donec sit amet justo lacus. Duis tincidunt tellus non lorem molestie lobortis. Ut nec mauris consectetur, convallis nisl vel, venenatis magna. Sed efficitur egestas purus, eu fermentum leo sodales in. Cras iaculis interdum lorem aliquet sodales. Aliquam elementum, nisl eget interdum elementum, nisi leo interdum turpis, id vestibulum eros erat ut ex.</p>
+              <p>Donec sit amet justo lacus. Duis tincidunt tellus non lorem molestie lobortis. Ut nec mauris
+              consectetur, convallis nisl vel, venenatis magna. Sed efficitur egestas purus, eu fermentum leo
+              sodales in. Cras iaculis interdum lorem aliquet sodales. Aliquam elementum, nisl eget interdum
+              elementum, nisi leo interdum turpis, id vestibulum eros erat ut ex.</p>
             </div>
             <div class="post-tags">
               <p><strong>Tags:</strong></p>
               <ul class="list list-horizontal"></ul>
             </div>
           </article>
-
           <!-- Artykuł 3 -->
           <article class="post" id="article-3" data-tags="scissors design yoga" data-author="George Orwell">
             <h3 class="post-title">Article 3</h3>
             <p class="post-author"></p>
             <div class="post-content">
-              <p>Duis non dolor efficitur erat interdum fringilla a lobortis dolor. Aenean in massa viverra, pretium augue et, imperdiet diam. Proin varius vitae lectus ut suscipit. Etiam metus lacus, molestie at ante eget, gravida tristique metus. Morbi finibus elit mi, ut aliquam libero tempor eu.</p>
+              <p>Duis non dolor efficitur erat interdum fringilla a lobortis dolor. Aenean in massa viverra,
+              pretium augue et, imperdiet diam. Proin varius vitae lectus ut suscipit. Etiam metus lacus,
+              molestie at ante eget, gravida tristique metus. Morbi finibus elit mi, ut aliquam libero tempor
+              eu.</p>
             </div>
             <div class="post-tags">
               <p><strong>Tags:</strong></p>
               <ul class="list list-horizontal"></ul>
             </div>
           </article>
-
           <!-- Artykuł 4 -->
           <article class="post" id="article-4" data-tags="pool design" data-author="Marion Berry">
             <h3 class="post-title">Article 4</h3>
             <p class="post-author"></p>
             <div class="post-content">
-              <p>Aenean in massa viverra, pretium augue et, imperdiet diam. Proin varius vitae lectus ut suscipit. Etiam metus lacus, molestie at ante eget, gravida tristique metus. Morbi finibus elit mi, ut aliquam libero tempor eu. Curabitur a arcu ut nunc ornare tempor.</p>
+              <p>Aenean in massa viverra, pretium augue et, imperdiet diam. Proin varius vitae lectus ut
+              suscipit. Etiam metus lacus, molestie at ante eget, gravida tristique metus. Morbi finibus elit mi,
+              ut aliquam libero tempor eu. Curabitur a arcu ut nunc ornare tempor.</p>
             </div>
             <div class="post-tags">
               <p><strong>Tags:</strong></p>
               <ul class="list list-horizontal"></ul>
             </div>
           </article>
-
           <!-- Artykuł 5 -->
           <article class="post" id="article-5" data-tags="scissors yoga" data-author="George Orwell">
             <h3 class="post-title">Article 5</h3>
             <p class="post-author"></p>
             <div class="post-content">
-              <p>Sed mattis auctor iaculis. Duis placerat tempus nisl, et commodo sem varius sed. Ut ac ultrices leo. Aliquam efficitur augue a scelerisque lacinia. Donec sit amet justo lacus. Duis tincidunt tellus non lorem molestie lobortis.</p>
+              <p>Sed mattis auctor iaculis. Duis placerat tempus nisl, et commodo sem varius sed. Ut ac
+              ultrices leo. Aliquam efficitur augue a scelerisque lacinia. Donec sit amet justo lacus. Duis
+              tincidunt tellus non lorem molestie lobortis.</p>
             </div>
             <div class="post-tags">
               <p><strong>Tags:</strong></p>
               <ul class="list list-horizontal"></ul>
             </div>
           </article>
-
           <!-- Artykuł 6 -->
           <article class="post" id="article-6" data-tags="cat cactus yoga" data-author="Friedrich Nietzsche">
             <h3 class="post-title">Article 6</h3>
             <p class="post-author"></p>
             <div class="post-content">
-              <p>Ut nec mauris consectetur, convallis nisl vel, venenatis magna. Sed efficitur egestas purus, eu fermentum leo sodales in. Cras iaculis interdum lorem aliquet sodales. Aliquam elementum, nisl eget interdum elementum, nisi leo interdum turpis.</p>
+              <p>Ut nec mauris consectetur, convallis nisl vel, venenatis magna. Sed efficitur egestas purus, eu
+              fermentum leo sodales in. Cras iaculis interdum lorem aliquet sodales. Aliquam elementum, nisl
+              eget interdum elementum, nisi leo interdum turpis.</p>
             </div>
             <div class="post-tags">
               <p><strong>Tags:</strong></p>
               <ul class="list list-horizontal"></ul>
             </div>
           </article>
-
         </section>
       </main>
     </div>

@@ -1,16 +1,13 @@
 @use "sass:color";
 
 /* Variables */
-
 $color-light: #fff;
 $color-dark: #444;
-
 $font-logo: 'Sacramento', cursive;
 $font-header: 'Oswald', sans-serif;
 $font-text: 'Source Sans Pro', sans-serif;
 
 /* Global */
-
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -34,15 +31,15 @@ body {
   text-transform: uppercase;
   font-family: $font-header;
   font-weight: 600;
+  
   span {
     text-transform: none;
     font-weight: 400;
-    color: color.adjust($color-dark, $lightness: 20%); // <-- Zmieniono z lighten na color.adjust
+    color: color.adjust($color-dark, $lightness: 20%);
   }
 }
 
 /* Layout */
-
 .wrapper {
   display: flex;
   margin-left: 10px;
@@ -65,7 +62,6 @@ body {
 }
 
 /* Logo */
-
 .logo {
   font-family: $font-logo;
   font-weight: 400;
@@ -75,11 +71,11 @@ body {
 }
 
 /* Lists */
-
 .list {
   list-style-type: none;
   margin: 0;
   padding: 0;
+  
   .active {
     font-weight: bold;
   }
@@ -92,17 +88,16 @@ body {
 }
 
 /* Authors */
-
 .authors {
   li {
-    margin-bottom: 12px;
+    margin-bottom: 12px; // POPRAWIONE: Przeniesiono wartość 12px przed klamrę zamykającą
   }
 }
 
 /* Post */
-
 .post {
   display: none;
+  
   &.active {
     display: block;
   }
@@ -114,58 +109,59 @@ body {
 
 .post-tags {
   display: flex;
+  
   p {
     margin: 0 10px 0 0;
   }
 }
+
 /* STYLOWANIE CHMURY TAGÓW */
 .tags.list {
-  list-style-type: none; // Usuwa kropki z listy
+  list-style-type: none;
   padding: 0;
   margin: 0;
-  display: flex;         // Elastyczne układanie elementów
-  flex-wrap: wrap;       // Przenoszenie tagów do kolejnej linii, gdy brakuje miejsca
-  gap: 8px 12px;         // Odstępy między tagami (pionowo i poziomo)
-  align-items: center;   // Wyrównanie tagów w pionie
-
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  
   li {
-    display: inline-block; // Wyświetlanie elementów inline'owo obok siebie
+    display: inline-block;
   }
-
+  
   a {
     text-decoration: none;
     transition: all 0.3s ease;
     font-weight: 600;
-
+    
     &:hover {
       opacity: 0.8;
-      transform: scale(1.05); // Delikatne powiększenie przy najechaniu myszką
+      transform: scale(1.05);
     }
-
-    // Deklaracja 5 różnych rozmiarów czcionek i kolorów
+    
     &.tag-size-1 {
       font-size: 70%;
-      color: #95a5a6; // Szary - najmniej popularne
+      color: #95a5a6;
     }
-
+    
     &.tag-size-2 {
       font-size: 90%;
-      color: #34495e; // Ciemnoniebieski
+      color: #34495e;
     }
-
+    
     &.tag-size-3 {
       font-size: 110%;
-      color: #2980b9; // Niebieski - średnio popularne
+      color: #2980b9;
     }
-
+    
     &.tag-size-4 {
       font-size: 135%;
-      color: #e67e22; // Pomarańczowy
+      color: #e67e22;
     }
-
+    
     &.tag-size-5 {
       font-size: 160%;
-      color: #e74c3c; // Czerwony - najbardziej popularne (największe)
+      color: #e74c3c;
     }
   }
 }
