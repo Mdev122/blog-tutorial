@@ -166,6 +166,11 @@ const generateTags = function() {
   console.log('--- ZAKOŃCZONO GENEROWANIE TAGÓW ---');
 };
 
+/* === FUNKCJA POMOCNICZA: GENEROWANIE SLUGA (authorUrl) Z IMIENIA AUTORA === */
+const generateAuthorUrl = function(authorName) {
+  return authorName.replace(/\s+/g, '-').toLowerCase();
+};
+
 /* === ETAP 4: DYNAMICZNE GENEROWANIE AUTORÓW ORAZ LISTY BOCZNEJ === */
 const generateAuthors = function() {
   console.log('--- URUCHOMIONO GENEROWANIE AUTORÓW ---');
@@ -182,7 +187,7 @@ const generateAuthors = function() {
     }
 
     const authorName = article.getAttribute('data-author');
-    const authorUrl = authorName.replace(/ /g, '-').toLowerCase();
+    const authorUrl = generateAuthorUrl(authorName);
     
     // WYKONANO: Pkt. 3 - Wykorzystanie szablonu pojedynczego linku autora pod wpisem
     const linkHTMLData = { authorName: authorName, authorUrl: authorUrl };
@@ -205,7 +210,7 @@ const generateAuthors = function() {
   for (let authorName in allAuthors) {
     allAuthorsData.authors.push({
       authorName: authorName,
-      authorUrl: authorName.replace(/ /g, '-').toLowerCase(),
+      authorUrl: generateAuthorUrl(authorName),
       count: allAuthors[authorName]
     });
   }
