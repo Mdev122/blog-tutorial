@@ -182,7 +182,7 @@ const generateAuthors = function() {
     }
 
     const authorName = article.getAttribute('data-author');
-    const authorUrl = authorName.replace(' ', '-').toLowerCase();
+    const authorUrl = authorName.replace(/ /g, '-').toLowerCase();
     
     // WYKONANO: Pkt. 3 - Wykorzystanie szablonu pojedynczego linku autora pod wpisem
     const linkHTMLData = { authorName: authorName, authorUrl: authorUrl };
@@ -205,7 +205,7 @@ const generateAuthors = function() {
   for (let authorName in allAuthors) {
     allAuthorsData.authors.push({
       authorName: authorName,
-      authorUrl: authorName.replace(' ', '-').toLowerCase(),
+      authorUrl: authorName.replace(/ /g, '-').toLowerCase(),
       count: allAuthors[authorName]
     });
   }
